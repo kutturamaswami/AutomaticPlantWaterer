@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fully.qualified.MainClass</mainClass>
+                            <mainClass>main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
