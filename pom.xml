@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main</mainClass>
+                            <mainClass>com/sai/AutomaticPlantWaterer/main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
