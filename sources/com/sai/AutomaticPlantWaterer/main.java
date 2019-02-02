@@ -26,7 +26,6 @@ public class main {
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
         // changes)
         GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
-                "gpio2",                   // PIN FRIENDLY NAME (optional)
                 PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
         myButton.addListener(new GpioPinListenerDigital() {
             @Override
