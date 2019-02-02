@@ -34,6 +34,8 @@ public class main {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
         });
+        GpioPinDigitalOutput firstValve = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "firstValve");
+        firstValve.setState(PinState.HIGH);
         while(true) {
             Thread.sleep(500);
         }
