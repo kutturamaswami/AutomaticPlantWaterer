@@ -21,7 +21,7 @@ import com.pi4j.io.gpio.event.PinEventType;
 public class main {
     public static void main(String[] args){
         System.out.println("test");
-        /*final GpioController gpio = GpioFactory.getInstance();
+        final GpioController gpio = GpioFactory.getInstance();
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
         // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
         // changes)
@@ -34,6 +34,6 @@ public class main {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
 
-        });*/
+        });
     }
 }
