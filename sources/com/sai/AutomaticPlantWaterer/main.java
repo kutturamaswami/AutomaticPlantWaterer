@@ -19,7 +19,7 @@ import com.pi4j.io.gpio.event.GpioPinEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 public class main {
-    public static void main(String[] args){
+    public static void main(String[] args)throws java.lang.InterruptedException {
         System.out.println("test");
         final GpioController gpio = GpioFactory.getInstance();
         // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
@@ -33,7 +33,9 @@ public class main {
                 // display pin state on console
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
             }
-
         });
+        while(true) {
+            Thread.sleep(500);
+        }
     }
 }
