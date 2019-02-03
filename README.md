@@ -1,1 +1,1 @@
-test
+School project for an automatic plant waterer- runs off of a Raspberry Pi 3 Model B with custom electronics attached
