@@ -1,6 +1,14 @@
 package com.sai.AutomaticPlantWaterer;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.nio.file.*;
+import java.io.IOException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
@@ -19,25 +27,76 @@ import com.pi4j.io.gpio.event.GpioPinEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 public class main {
-    public static void main(String[] args)throws java.lang.InterruptedException {
-        System.out.println("test");
-        final GpioController gpio = GpioFactory.getInstance();
-        // provision gpio pin #02 as an input pin with its internal pull down resistor enabled
-        // (configure pin edge to both rising and falling to get notified for HIGH and LOW state
-        // changes)
-        GpioPinDigitalInput myButton = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02,             // PIN NUMBER
-                PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
-        myButton.addListener(new GpioPinListenerDigital() {
-            @Override
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                // display pin state on console
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = " + event.getState());
+    public static void main(String[] args)throws java.lang.InterruptedException, java.io.IOException {
+        //final GpioController gpio = GpioFactory.getInstance();
+        ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
+        tmt.scheduleAtFixedRate(() -> {
+            runSchedule();
+        }, 0, 30, TimeUnit.MINUTES);
+    }
+    private static void runSchedule() {
+        double[] moistures = checkMoistures(); //moistures of each plant- range of 0.00 to 1.00
+        Plant[] plants = makePlants(); //get array of all plants from JSON file
+        boolean needsWatering = false;
+        for(int a = 0; a<plants.length; a++) { //check if watering is needed; minimizes pump time
+            if(moistures[a]<plants[a].getMinMoisture()) { //check if current moisture is below minimum
+                needsWatering = true;
             }
-        });
-        GpioPinDigitalOutput firstValve = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "firstValve");
-        firstValve.setState(PinState.HIGH);
-        while(true) {
-            Thread.sleep(500);
         }
+
+        if(needsWatering) { //only starts pump if watering is needed
+            changePumpState(true); //turn pump on
+            try {
+                Thread.sleep(1000); //give pump 1 second runup time
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (int a = 0; a < plants.length; a++) {
+                if (moistures[a] < plants[a].getMinMoisture()) { //check if specific plant needs watering
+                    waterPlant(plants[a]); //water it
+                }
+            }
+            changePumpState(false); //turn pump off
+        }
+        needsWatering = false;
+    }
+
+    private static double[] checkMoistures() {
+        //check moistures through ADC GPIO
+        return new double [] {0.00, 0.25, 0.50, 0.75};
+    }
+
+    private static Plant[] makePlants() {
+        String jsonData;
+        try {
+            jsonData = new String(Files.readAllBytes(Paths.get("plants.json"))); //get string of JSON file
+        } catch(IOException e) {
+            e.printStackTrace();
+            jsonData = null; //make java happy
+        }
+        GsonBuilder builder = new GsonBuilder(); //GSON startup stuff
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        return gson.fromJson(jsonData, Plant[].class); //turn JSON string into Plant[], return it
+    }
+
+    private static void waterPlant(Plant plant) {
+        long timeOpen = convertToTime(plant.getMoistureIncrement()); //time to stay open in milliseconds
+        changeValveState(plant, true); //open valve
+        ScheduledExecutorService waterTimer = Executors.newScheduledThreadPool(1);
+        waterTimer.scheduleAtFixedRate(() -> {
+            changeValveState(plant, false); //close valve
+        }, 0, timeOpen, TimeUnit.MILLISECONDS); //wait until right amount of water is dispensed
+    }
+
+    private static void changePumpState(boolean value) {
+        //change pump state through GPIO
+    }
+
+    private static long convertToTime(int mLs) {
+        return 557; //return time valve needs to be open to deliver certain amount of water, obtained empirically
+    }
+
+    private static void changeValveState(Plant plant, boolean state) {
     }
 }
