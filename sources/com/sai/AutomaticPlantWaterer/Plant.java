@@ -5,17 +5,15 @@ public class Plant {
     private int number; //number in line from right to left
     private double minMoisture; //moisture 0.00-1.00
     private int moistureIncrement; //mL to add every watering
-    private int pin; //pin to activate valve with
 
     Plant() {
     }
 
-    Plant(String nName, int nNumber, double nMinMoisture, int nMoistureIncrement, int nPin) {
+    Plant(String nName, int nNumber, double nMinMoisture, int nMoistureIncrement) {
         name = nName;
         number = nNumber;
         minMoisture = nMinMoisture;
         moistureIncrement = nMoistureIncrement;
-        pin = nPin;
     }
 
     String getName() {
@@ -30,10 +28,6 @@ public class Plant {
         return moistureIncrement;
     }
 
-    int getPin() {
-        return pin;
-    }
-
     @Override
     public String toString() {
         return "Plant{" +
@@ -41,7 +35,6 @@ public class Plant {
                 ", number=" + number +
                 ", minMoisture=" + minMoisture +
                 ", moistureIncrement=" + moistureIncrement +
-                ", pin=" + pin +
-                '}';
+                "}";
     }
 }
