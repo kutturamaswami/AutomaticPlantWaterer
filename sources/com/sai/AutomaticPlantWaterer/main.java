@@ -28,11 +28,16 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 public class main {
     public static void main(String[] args)throws java.lang.InterruptedException, java.io.IOException {
-        //final GpioController gpio = GpioFactory.getInstance();
-        ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
+        final GpioController gpio = GpioFactory.getInstance();
+        final GpioPinDigitalOutput pin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "pintest", PinState.HIGH);
+        while(true){
+            Thread.sleep(5000);
+            pin.toggle();
+        }
+        /*ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
         tmt.scheduleAtFixedRate(() -> {
             runSchedule();
-        }, 0, 30, TimeUnit.MINUTES);
+        }, 0, 30, TimeUnit.MINUTES);*/
     }
     private static void runSchedule() {
         double[] moistures = checkMoistures(); //moistures of each plant- range of 0.00 to 1.00
