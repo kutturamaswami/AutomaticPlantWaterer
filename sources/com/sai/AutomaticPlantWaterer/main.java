@@ -54,7 +54,7 @@ public class main {
         if(needsWatering) { //only starts pump if watering is needed
             gpio5.setState(true); //turn pump on
             try {
-                Thread.sleep(1000); //give pump 1 second runup time
+                Thread.sleep(3000); //give pump 3 second runup time
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -100,7 +100,7 @@ public class main {
     }
 
     private static long convertToTime(int mLs) {
-        return 557; //return time valve needs to be open to deliver certain amount of water, obtained empirically
+        return 10000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
     }
 
     private static void changeValveState(Plant plant, boolean state) {
