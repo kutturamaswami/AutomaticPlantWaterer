@@ -90,11 +90,13 @@ public class main {
     private static void waterPlant(Plant plant) {
         long timeOpen = convertToTime(plant.getMoistureIncrement()); //time to stay open in milliseconds
         System.out.println("Watering plant name: " + plant.getName() + " number: " + plant.getNumber() + " for milliseconds: " + timeOpen);
-        changeValveState(plant, true); //open valve +
-        ScheduledExecutorService waterTimer = Executors.newScheduledThreadPool(1);
-        waterTimer.scheduleAtFixedRate(() -> {
-            changeValveState(plant, false); //close valve
-        }, timeOpen, timeOpen, TimeUnit.MILLISECONDS); //wait until right amount of water is dispensed
+        changeValveState(plant, true); //open valve
+        try {
+            Thread.sleep(timeOpen);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+        changeValveState(plant, false); //close valve
     }
 
     private static long convertToTime(int mLs) {
