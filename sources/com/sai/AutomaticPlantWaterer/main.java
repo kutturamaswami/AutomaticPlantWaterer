@@ -28,11 +28,11 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 public class main {
     static final GpioController gpio = GpioFactory.getInstance();
-    static final GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Pin 0", PinState.LOW);
-    static final GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Pin 1", PinState.LOW);
-    static final GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Pin 2", PinState.LOW);
-    static final GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Pin 3", PinState.LOW);
-    static final GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Pump Pin 4", PinState.LOW);
+    static final GpioPinDigitalOutput gpio1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "GPIO 1 - RELAY 1", PinState.LOW);
+    static final GpioPinDigitalOutput gpio2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "GPIO 2 - RELAY 2", PinState.LOW);
+    static final GpioPinDigitalOutput gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "GPIO 3 - RELAY 3", PinState.LOW);
+    static final GpioPinDigitalOutput gpio4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "GPIO 4 - RELAY 4", PinState.LOW);
+    static final GpioPinDigitalOutput gpio5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "GPIO 5 - RELAY 5 - PUMP", PinState.LOW);
 
     public static void main(String[] args)throws java.lang.InterruptedException, java.io.IOException {
         ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
@@ -51,7 +51,7 @@ public class main {
         }
 
         if(needsWatering) { //only starts pump if watering is needed
-            pin4.setState(true); //turn pump on
+            gpio5.setState(true); //turn pump on
             try {
                 Thread.sleep(1000); //give pump 1 second runup time
             } catch (InterruptedException e) {
@@ -62,7 +62,7 @@ public class main {
                     waterPlant(plants[a]); //water it
                 }
             }
-            pin4.setState(false); //turn pump off
+            gpio5.setState(false); //turn pump off
         }
         needsWatering = false;
     }
@@ -102,19 +102,16 @@ public class main {
     private static void changeValveState(Plant plant, boolean state) {
         switch(plant.getNumber()) {
             case 0:
-                pin0.setState(state);
+                gpio1.setState(state);
                 break;
             case 1:
-                pin1.setState(state);
+                gpio2.setState(state);
                 break;
             case 2:
-                pin2.setState(state);
+                gpio3.setState(state);
                 break;
             case 3:
-                pin3.setState(state);
-                break;
-            case 4:
-                pin4.setState(state);
+                gpio4.setState(state);
                 break;
         }
     }
