@@ -41,6 +41,7 @@ public class main {
         }, 0, 30, TimeUnit.MINUTES);
     }
     private static void runSchedule() {
+        System.out.println("Starting watering cycle at: " + System.currentTimeMillis());
         double[] moistures = checkMoistures(); //moistures of each plant- range of 0.00 to 1.00
         Plant[] plants = makePlants(); //get array of all plants from JSON file
         boolean needsWatering = false;
@@ -88,11 +89,12 @@ public class main {
 
     private static void waterPlant(Plant plant) {
         long timeOpen = convertToTime(plant.getMoistureIncrement()); //time to stay open in milliseconds
-        changeValveState(plant, true); //open valve
+        System.out.println("Watering plant name: " + plant.getName() + " number: " + plant.getNumber() + " for milliseconds: " + timeOpen);
+        changeValveState(plant, true); //open valve +
         ScheduledExecutorService waterTimer = Executors.newScheduledThreadPool(1);
         waterTimer.scheduleAtFixedRate(() -> {
             changeValveState(plant, false); //close valve
-        }, 0, timeOpen, TimeUnit.MILLISECONDS); //wait until right amount of water is dispensed
+        }, timeOpen, timeOpen, TimeUnit.MILLISECONDS); //wait until right amount of water is dispensed
     }
 
     private static long convertToTime(int mLs) {
@@ -114,5 +116,6 @@ public class main {
                 gpio4.setState(state);
                 break;
         }
+        System.out.println("Set plant name: " + plant.getName() + " number: " + plant.getNumber() + " to state " + state);
     }
 }
