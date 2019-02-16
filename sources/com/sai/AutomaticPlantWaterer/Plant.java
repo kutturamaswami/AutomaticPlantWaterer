@@ -20,6 +20,8 @@ public class Plant {
         return name;
     }
 
+    int getNumber() { return number; }
+
     double getMinMoisture() {
         return minMoisture;
     }

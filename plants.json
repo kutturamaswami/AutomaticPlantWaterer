@@ -3,24 +3,24 @@
     "name": "Money Plant",
     "number": 0,
     "minMoisture": 0.75,
-    "moistureIncrement": 350,
+    "moistureIncrement": 350
   },
   {
     "name": "Purple Heart",
     "number": 1,
     "minMoisture": 0.75,
-    "moistureIncrement": 250,
+    "moistureIncrement": 250
   },
   {
     "name": "Curry Leaf",
     "number": 2,
     "minMoisture": 0.75,
-    "moistureIncrement": 500,
+    "moistureIncrement": 500
   },
   {
     "name": "Guzmania Bromeliad",
     "number": 3,
     "minMoisture": 0.75,
-    "moistureIncrement": 350,
+    "moistureIncrement": 350
   }
 ]

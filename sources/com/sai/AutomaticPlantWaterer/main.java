@@ -28,11 +28,11 @@ import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
 public class main {
     static final GpioController gpio = GpioFactory.getInstance();
-    static final GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Pin 0", PinState.LOW);
-    static final GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Pin 1", PinState.LOW);
-    static final GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Pin 2", PinState.LOW);
-    static final GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Pin 3", PinState.LOW);
-    static final GpioPinDigitalOutput pin5 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Pump Pin 5", PinState.LOW);
+    static final GpioPinDigitalOutput pin0 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "Pin 0", PinState.LOW);
+    static final GpioPinDigitalOutput pin1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "Pin 1", PinState.LOW);
+    static final GpioPinDigitalOutput pin2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "Pin 2", PinState.LOW);
+    static final GpioPinDigitalOutput pin3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "Pin 3", PinState.LOW);
+    static final GpioPinDigitalOutput pin4 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, "Pump Pin 4", PinState.LOW);
 
     public static void main(String[] args)throws java.lang.InterruptedException, java.io.IOException {
         ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
@@ -43,7 +43,6 @@ public class main {
     private static void runSchedule() {
         double[] moistures = checkMoistures(); //moistures of each plant- range of 0.00 to 1.00
         Plant[] plants = makePlants(); //get array of all plants from JSON file
-        assignPins(plants);
         boolean needsWatering = false;
         for(int a = 0; a<plants.length; a++) { //check if watering is needed; minimizes pump time
             if(moistures[a]<plants[a].getMinMoisture()) { //check if current moisture is below minimum
@@ -52,7 +51,7 @@ public class main {
         }
 
         if(needsWatering) { //only starts pump if watering is needed
-            pin5.setState(true); //turn pump on
+            pin4.setState(true); //turn pump on
             try {
                 Thread.sleep(1000); //give pump 1 second runup time
             } catch (InterruptedException e) {
@@ -63,7 +62,7 @@ public class main {
                     waterPlant(plants[a]); //water it
                 }
             }
-            pin5.setState(false); //turn pump off
+            pin4.setState(false); //turn pump off
         }
         needsWatering = false;
     }
@@ -101,10 +100,22 @@ public class main {
     }
 
     private static void changeValveState(Plant plant, boolean state) {
-        //switch(plant.get)
-    }
-
-    private static void assignPins(Plant[] plants) {
-
+        switch(plant.getNumber()) {
+            case 0:
+                pin0.setState(state);
+                break;
+            case 1:
+                pin1.setState(state);
+                break;
+            case 2:
+                pin2.setState(state);
+                break;
+            case 3:
+                pin3.setState(state);
+                break;
+            case 4:
+                pin4.setState(state);
+                break;
+        }
     }
 }
