@@ -44,7 +44,7 @@ public class main {
             gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A2, "ADS A2"),
             gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A3, "ADS A3"),
     };
-    adsProvider.setProgrammableGainAmplifier(ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
+    /*adsProvider.setProgrammableGainAmplifier(ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
     adsProvider.setEventThreshold(500, ADS1115Pin.ALL);
     adsProvider.setMonitorInterval(100);
     static GpioPinListenerAnalog adsListener = new GpioPinListenerAnalog() {
@@ -55,7 +55,7 @@ public class main {
             double voltage = adsProvider.getProgrammableGainAmplifier(event.getPin()).getVoltage() * (percent/100);
         }
     };
-    //myInputs[0].addListener(adsListener);
+    myInputs[0].addListener(adsListener);*/
 
     static final GpioPinDigitalOutput gpio1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "GPIO 1 - RELAY 1", PinState.LOW);
     static final GpioPinDigitalOutput gpio2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "GPIO 2 - RELAY 2", PinState.LOW);
