@@ -2,6 +2,7 @@ package com.sai.AutomaticPlantWaterer;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinAnalogInput;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,11 +24,39 @@ import com.pi4j.io.gpio.trigger.GpioSetStateTrigger;
 import com.pi4j.io.gpio.trigger.GpioSyncStateTrigger;
 import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
+import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.gpio.event.GpioPinEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.io.gpio.event.PinEventType;
+import com.pi4j.gpio.extension.ads.ADS1115GpioProvider;
+import com.pi4j.gpio.extension.ads.ADS1115Pin;
+import com.pi4j.gpio.extension.ads.ADS1x15GpioProvider.ProgrammableGainAmplifierValue;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CFactory.UnsupportedBusNumberException;
+
 public class main {
     static final GpioController gpio = GpioFactory.getInstance();
+    static final ADS1115GpioProvider adsProvider = new ADS1115GpioProvider(I2CBus.BUS_1, ADS1115GpioProvider.ADS1115_ADDRESS_0x48);
+    static GpioPinAnalogInput myInputs[] = {
+            gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A0, "ADS A0"),
+            gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A1, "ADS A1"),
+            gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A2, "ADS A2"),
+            gpio.provisionAnalogInputPin(adsProvider, ADS1115Pin.INPUT_A3, "ADS A3"),
+    };
+    adsProvider.setProgrammableGainAmplifier(ProgrammableGainAmplifierValue.PGA_4_096V, ADS1115Pin.ALL);
+    adsProvider.setEventThreshold(500, ADS1115Pin.ALL);
+    adsProvider.setMonitorInterval(100);
+    static GpioPinListenerAnalog adsListener = new GpioPinListenerAnalog() {
+        @Override
+        public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
+            double value = event.getValue();
+            double percent = ((value * 100) / ADS1115GpioProvider.ADS1115_RANGE_MAX_VALUE);
+            double voltage = adsProvider.getProgrammableGainAmplifier(event.getPin()).getVoltage() * (percent/100);
+        }
+    };
+    //myInputs[0].addListener(adsListener);
+
     static final GpioPinDigitalOutput gpio1 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_01, "GPIO 1 - RELAY 1", PinState.LOW);
     static final GpioPinDigitalOutput gpio2 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "GPIO 2 - RELAY 2", PinState.LOW);
     static final GpioPinDigitalOutput gpio3 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_03, "GPIO 3 - RELAY 3", PinState.LOW);
