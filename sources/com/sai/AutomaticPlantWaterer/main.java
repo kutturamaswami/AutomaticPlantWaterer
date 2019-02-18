@@ -83,7 +83,7 @@ public class main {
         if(needsWatering) { //only starts pump if watering is needed
             gpio5.setState(true); //turn pump on
             try {
-                Thread.sleep(3000); //give pump 3 second runup time
+                Thread.sleep(1000); //give pump 3 second runup time
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
