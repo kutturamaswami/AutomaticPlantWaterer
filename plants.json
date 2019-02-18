@@ -20,7 +20,6 @@
   {
     "name": "Guzmania Bromeliad",
     "number": 3,
-    "minMoisture": 0.80,
     "moistureIncrement": 350
   }
 ]

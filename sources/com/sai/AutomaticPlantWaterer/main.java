@@ -99,7 +99,7 @@ public class main {
 
     private static double[] checkMoistures() {
         //check moistures through ADC GPIO
-        return new double [] {0.00, 0.25, 0.50, 0.75};
+        return new double [] {0.00, 1.00, 1.00, 1.00};
     }
 
     private static Plant[] makePlants() {
