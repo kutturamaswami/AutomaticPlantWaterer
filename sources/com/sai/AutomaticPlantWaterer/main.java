@@ -99,7 +99,7 @@ public class main {
 
     private static double[] checkMoistures() {
         //check moistures through ADC GPIO
-        return new double [] {1.00, 1.00, 1.00, 0.00};
+        return new double [] {0.00, 1.00, 1.00, 1.00};
     }
 
     private static Plant[] makePlants() {
@@ -129,7 +129,7 @@ public class main {
     }
 
     private static long convertToTime(int mLs) {
-        return 15000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
+        return 10000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
     }
 
     private static void changeValveState(Plant plant, boolean state) {
