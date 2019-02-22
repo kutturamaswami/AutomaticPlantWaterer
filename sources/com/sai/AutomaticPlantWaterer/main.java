@@ -129,7 +129,7 @@ public class main {
     }
 
     private static long convertToTime(int mLs) {
-        return 24000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
+        return 25000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
     }
 
     private static void changeValveState(Plant plant, boolean state) {
