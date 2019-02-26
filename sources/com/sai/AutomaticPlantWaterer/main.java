@@ -137,7 +137,7 @@ public class main {
             case 2:
                 return 5000; //purple heart valve broke
             case 3:
-                return (long) ((0.008518518518519 * plant.getMoistureIncrement()) + 15.611111111111) * 1000;
+                return (long) ((0.008518518518519 * plant.getMoistureIncrement()) + 10.611111111111) * 1000;
         }
         return 5000; //default, shouldn't ever happen
     }
