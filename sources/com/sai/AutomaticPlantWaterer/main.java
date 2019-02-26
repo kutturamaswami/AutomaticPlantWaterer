@@ -67,7 +67,7 @@ public class main {
         ScheduledExecutorService tmt = Executors.newScheduledThreadPool(1);
         tmt.scheduleAtFixedRate(() -> {
             runSchedule();
-        }, 0, 30, TimeUnit.MINUTES);
+        }, 0, 3, TimeUnit.DAYS);
     }
     private static void runSchedule() {
         System.out.println("Starting watering cycle at: " + System.currentTimeMillis());
@@ -117,7 +117,7 @@ public class main {
     }
 
     private static void waterPlant(Plant plant) {
-        long timeOpen = convertToTime(plant.getMoistureIncrement()); //time to stay open in milliseconds
+        long timeOpen = convertToTime(plant); //time to stay open in milliseconds
         System.out.println("Watering plant name: " + plant.getName() + " number: " + plant.getNumber() + " for milliseconds: " + timeOpen);
         changeValveState(plant, true); //open valve
         try {
@@ -128,8 +128,18 @@ public class main {
         changeValveState(plant, false); //close valve
     }
 
-    private static long convertToTime(int mLs) {
-        return 16000; //return time valve needs to be open to deliver certain amount of water, obtained empirically
+    private static long convertToTime(Plant plant) {
+        switch(plant.getNumber()) {
+            case 0:
+                return (long) ((0.009923664122137 * plant.getMoistureIncrement()) + 0.931297709923662) * 1000;
+            case 1:
+                return (long) ((0.014528875379939 * plant.getMoistureIncrement()) + 2.28662613981763) * 1000;
+            case 2:
+                return 5000; //purple heart valve broke
+            case 3:
+                return (long) ((0.008518518518519 * plant.getMoistureIncrement()) + 15.611111111111) * 1000;
+        }
+        return 5000; //default, shouldn't ever happen
     }
 
     private static void changeValveState(Plant plant, boolean state) {
